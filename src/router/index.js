@@ -6,18 +6,29 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'add',
-    component: () => import('../components/UserCreate')
+    name: 'home',
+    component: () => import('../components/Home')
   },
   {
-    path: '/list',
-    name: 'list',
-    component: () => import('../components/UserList')
+
+    path: '/login',
+    name: 'login',
+    component: () => import('../components/UserAuth')
   },
   {
-    path: '/edit/:id',
-    name: 'edit',
-    component: () => import('../components/UserEdit')
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('../components/Dashboard')
+  },
+  {
+    path:'/item/:id',
+    name:'edit',
+    component: ()=> import('../components/ItemEdit')
+  },
+  {
+    path:'/item-add',
+    name:'add',
+    component: ()=> import('../components/AddItem')
   }
 ]
 
@@ -27,4 +38,13 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  if (to.name !== 'login' && !sessionStorage.getItem('token')) {
+      next({ name: 'login' });
+  } else if (to.name==='home' && sessionStorage.getItem('token')) {
+      next({ name: 'dashboard' });
+  } else {
+      next();
+  }
+});
 export default router
